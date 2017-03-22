@@ -78,9 +78,7 @@ app.controller('HostShowController', ['$scope', '$http', function($scope, $http)
 
 	$scope.fbShare = function () {
 		var base = window.location.origin;
-		var link = base + '/' + document.getElementById('locale').className + '/pages/home/'  + '?invite=' + $scope.host.id;
-
-		console.log(link);
+		var link = base + '/' + document.getElementById('locale').className + '/pages/home'  + '?invite=' + $scope.host.id;
 
 		FB.ui({
 		  method: 'share',
