@@ -139,6 +139,8 @@ app.controller('ManagerShowController', ['$scope','$uibModal', '$http', '$locati
       has_invites: $scope.search.has_invites
     };
 
+    debugger;
+
     $http.get('/managers/' + $scope.currentUser.meta.id + '.json' + '?' + $.param(params))
     .then(
       function(response) {
