@@ -14,11 +14,14 @@ namespace :hotfixes do
     City.where(name: nil).destroy_all
     City.where("name LIKE '%@%'").destroy_all
 
-    cities_name_delete = ["קוצושטינאו", "קוצושטיאנו", "כל הארץ"]
+    cities_name_delete = ["'הרצליה'", "Amonah", "Ashkelon", "Haifa","Hertzliya", ]
     cities_name_delete.each do |cityname|
       city = City.find_by_name(cityname)
       city.destroy unless city.nil?
     end
+
+    # Delete null cities if exist
+    City.where('name is NULL').last.destroy
 
     cities_name_fix = [["Tel Aviv-yafo", "תל אביב יפו"], ["Haifa", "חיפה"], ["ראשלצ", "ראשון לציון"], ["נהרייה", "נהריה"], ["גבעים", "גבעתיים"], ["עמונה","Amonah"], ["גושר", "גשר"], ["עין חר", "עין חרוד"], ["כפר תפ", "כפר תפוח"], ["שדה ורב", "שדה ורבורג"] ]
     cities_name_fix.each do |oldname, newname|
@@ -49,6 +52,17 @@ namespace :hotfixes do
         c.save!
         puts c.name_en + "    " + c.name_he
       end
+    end
+  end
+
+  # heroku --remote heroku run rake hotfixes:fix_cities
+  # bundler exec rake hotfixes:fix_cities
+  desc "fix cities"
+  task :fix_cities => :environment do
+    cities_name_fix = [["Tel Aviv-yafo", "תל אביב יפו"], ["Haifa", "חיפה"], ["ראשלצ", "ראשון לציון"], ["נהרייה", "נהריה"], ["גבעים", "גבעתיים"], ["עמונה","Amonah"], ["גושר", "גשר"], ["עין חר", "עין חרוד"], ["כפר תפ", "כפר תפוח"], ["שדה ורב", "שדה ורבורג"] ]
+    cities_name_fix.each do |oldname, newname|
+      city = City.find_by_name(oldname)
+      city.update_column(:name, newname) unless city.nil?
     end
   end
 
@@ -175,17 +189,6 @@ namespace :hotfixes do
         witness.available_day6 = nil
         witness.save!
       end
-    end
-  end
-
-  # heroku --remote heroku run rake hotfixes:fix_cities
-  # bundler exec rake hotfixes:fix_cities
-  desc "fix cities"
-  task :fix_cities => :environment do
-    cities_name_fix = [["Tel Aviv-yafo", "תל אביב יפו"], ["Haifa", "חיפה"], ["ראשלצ", "ראשון לציון"], ["נהרייה", "נהריה"], ["גבעים", "גבעתיים"], ["עמונה","Amonah"], ["גושר", "גשר"], ["עין חר", "עין חרוד"], ["כפר תפ", "כפר תפוח"], ["שדה ורב", "שדה ורבורג"] ]
-    cities_name_fix.each do |oldname, newname|
-      city = City.find_by_name(oldname)
-      city.update_column(:name, newname) unless city.nil?
     end
   end
 
